@@ -22,7 +22,7 @@ RUN xonsh assemble.xsh
 
 
 # Assemble the final container
-FROM java:8-jre-alpine
+FROM openjdk:8-jre-alpine
 
 COPY --from=build-rcon /tmp/target/release/rcon /usr/bin/rcon
 COPY --from=build-server /mc /mc
