@@ -26,9 +26,6 @@ elif $version.lower() == 'snapshot':
 else:
     version_num = $version
 
-if not pf"build-{$type}.xsh".exists():
-    exit(f"Unknown server type {$type}")
-
 
 # Overridables
 def java_args():
@@ -46,7 +43,10 @@ def server_invocation():
 def make_bourne_command(args):
     return " ".join(f"'{bit}'" for bit in args)
 
+
 $type = $type.lower()
+if not pf"build-{$type}.xsh".exists():
+    exit(f"Unknown server type {$type}")
 source build-$type.xsh
 
 p"/mc/launch".write_text(f"""#!/bin/sh
