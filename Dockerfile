@@ -27,3 +27,10 @@ FROM java:8-alpine
 COPY --from=build-rcon /tmp/target/release/rcon /usr/bin/rcon
 COPY --from=build-server /mc /mc
 VOLUME /mc/world
+
+# Entrypoint?
+# Zombie reaping? Don't expect any shelling
+# Sending stop command? Vanilla server seems to exit gracefully on SIGTERM
+# Forwarding signals? Only if it exists
+CMD ["/mc/launch"]
+HEALTHCHECK --start-period=5m CMD /mc/healthcheck
