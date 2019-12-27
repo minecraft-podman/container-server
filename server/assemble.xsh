@@ -19,14 +19,6 @@ p"/mc/eula.txt".write_text("""
 eula=true
 """)
 
-if $version.lower() == 'latest':
-    version_num = get_versions_data()['latest']['release']
-elif $version.lower() == 'snapshot':
-    version_num = get_versions_data()['latest']['snapshot']
-else:
-    version_num = $version
-
-
 # Overridables
 def java_args():
     return []

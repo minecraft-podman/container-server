@@ -16,3 +16,12 @@ def get_version_data(num):
     resp = requests.get(summary['url'])
     resp.raise_for_status()
     return resp.json()
+
+
+def get_version_from_buildargs():
+    if $version.lower() == 'latest':
+        return get_versions_data()['latest']['release']
+    elif $version.lower() == 'snapshot':
+        return get_versions_data()['latest']['snapshot']
+    else:
+        return $version

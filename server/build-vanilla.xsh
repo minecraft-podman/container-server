@@ -1,8 +1,8 @@
-from utils import get_version_data
+from utils import get_version_data, get_version_from_buildargs
 import requests
 print("Downloading server...")
 
-info = get_version_data(version_num)
+info = get_version_data(get_version_from_buildargs())
 
 with requests.get(info['downloads']['server']['url'], stream=True) as resp:
     resp.raise_for_status()
