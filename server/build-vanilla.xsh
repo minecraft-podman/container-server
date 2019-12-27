@@ -10,3 +10,7 @@ with requests.get(info['downloads']['server']['url'], stream=True) as resp:
         for chunk in resp.iter_content(chunk_size=8192):
             if chunk:  # Filter out keep-alive new chunks
                 dest.write(chunk)
+
+
+def jar_name():
+    return "/mc/server.jar"
