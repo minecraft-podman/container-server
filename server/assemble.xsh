@@ -46,7 +46,7 @@ def server_invocation():
 def make_bourne_command(args):
     return " ".join(f"'{bit}'" for bit in args)
 
-
+$type = $type.lower()
 source build-$type.xsh
 
 p"/mc/launch".write_text(f"""#!/bin/sh
