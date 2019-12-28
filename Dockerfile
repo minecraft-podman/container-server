@@ -1,20 +1,21 @@
+FROM rust:buster AS rustbuilder
+RUN rustup target add x86_64-unknown-linux-musl
+RUN apt-get update 
+RUN apt-get install -y musl-tools
+
 # Build RCON helper
-FROM rust:alpine AS build-rcon
-COPY rcon /tmp
+FROM rustbuilder AS build-rcon
+COPY rcon localmc /tmp
 WORKDIR /tmp/rcon
-RUN cargo build --release
+RUN cargo build --target x86_64-unknown-linux-musl --release
 
 
 # Build Query helper
 # Note: We're cross-compiling from debian to alpine (musl) because of proc_macro
 # See https://github.com/rust-lang/rust/issues/40174
-FROM rust:buster AS build-query
-COPY query /tmp
+FROM rustbuilder AS build-query
+COPY query localmc /tmp
 WORKDIR /tmp/query
-# FIXME: Handle if we're building on not-amd64
-RUN rustup target add x86_64-unknown-linux-musl
-RUN apt-get update 
-RUN apt-get install -y musl-tools libssl-dev
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
 
