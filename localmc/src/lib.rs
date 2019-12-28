@@ -73,8 +73,5 @@ pub fn find_root() -> Option<PathBuf> {
 }
 
 pub fn find_serverprops() -> Option<PathBuf> {
-    match find_root() {
-        Some(p) => Some(p.join("server.properties")),
-        None => None
-    }
+    find_root().map(|p| p.join("server.properties"))
 }
