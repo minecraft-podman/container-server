@@ -5,7 +5,8 @@ RUN apt-get install -y musl-tools
 
 # Build RCON helper
 FROM rustbuilder AS build-cmd
-COPY cmd localmc /tmp
+COPY cmd /tmp/cmd
+COPY localmc /tmp/localmc
 WORKDIR /tmp/cmd
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
@@ -14,7 +15,8 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 # Note: We're cross-compiling from debian to alpine (musl) because of proc_macro
 # See https://github.com/rust-lang/rust/issues/40174
 FROM rustbuilder AS build-query
-COPY query localmc /tmp
+COPY query /tmp/query
+COPY localmc /tmp/localmc
 WORKDIR /tmp/query
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
