@@ -3,8 +3,7 @@ use std::process::exit;
 use std::env;
 use failure::Error;
 use localmc::{read_properties, find_serverprops};
-
-extern crate rcon;
+use rcon;
 
 
 fn main() {

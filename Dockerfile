@@ -4,9 +4,9 @@ RUN apt-get update
 RUN apt-get install -y musl-tools
 
 # Build RCON helper
-FROM rustbuilder AS build-rcon
-COPY rcon localmc /tmp
-WORKDIR /tmp/rcon
+FROM rustbuilder AS build-cmd
+COPY cmd localmc /tmp
+WORKDIR /tmp/cmd
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
 
@@ -40,7 +40,7 @@ FROM openjdk:8-jre-alpine
 
 RUN apk add libssl1.1
 
-COPY --from=build-rcon /tmp/rcon/target/release/rcon /usr/bin/rcon
+COPY --from=build-cmd /tmp/cmd/target/release/cmd /usr/bin/cmd
 COPY --from=build-query /tmp/query/target/release/query /usr/bin/query
 COPY --from=build-server /mc /mc
 VOLUME /mc/world
