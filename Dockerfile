@@ -23,6 +23,14 @@ WORKDIR /tmp/status
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
 
+# Build entrypoint
+FROM alpine AS build-entrypoint
+RUN apk add tar
+ADD https://github.com/itzg/mc-server-runner/releases/download/1.3.3/mc-server-runner_1.3.3_linux_amd64.tar.gz /
+RUN tar xaf mc-server-runner_1.3.3_linux_amd64.tar.gz
+
+
+
 # Gather the server
 FROM xonsh/xonsh:alpine AS build-server
 # Set to anything to accept the Mojang EULA
@@ -44,9 +52,10 @@ FROM openjdk:8-jre-alpine
 
 COPY --from=build-cmd /tmp/cmd/target/x86_64-unknown-linux-musl/release/cmd /usr/bin/cmd
 COPY --from=build-status /tmp/status/target/x86_64-unknown-linux-musl/release/status /usr/bin/status
+COPY --from=build-entrypoint /mc-server-runner /mc-server-runner
 COPY --from=build-server /mc /mc
 VOLUME /mc/world
 
-# TODO: Entrypoint (RIIR https://github.com/itzg/mc-server-runner)
+ENTRYPOINT ["/mc-server-runner", "-shell", "/bin/sh"]
 CMD ["/mc/launch"]
 HEALTHCHECK --start-period=5m CMD ["status"]
