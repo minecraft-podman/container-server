@@ -46,8 +46,3 @@ cd /mc
 exec {make_bourne_command(server_invocation())} "$*"
 """)
 p"/mc/launch".chmod(0o755)
-
-p"/mc/healthcheck".write_text(f"""#!/bin/sh
-exec rcon "list"
-""")
-p"/mc/healthcheck".chmod(0o755)
