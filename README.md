@@ -28,8 +28,9 @@ Contents
 
 In addition to a basic Minecraft server (in `/mc`), this container holds:
 
-* `rcon`: A program to run commands via rcon. Automatically reads connection information from `server.properties` (Fails if rcon is not enabled)
+* `cmd`: A program to run commands via rcon. Automatically reads connection information from `server.properties` (Fails if rcon is not enabled)
 * Healthcheck: A healthcheck via rcon (TODO: Implement direct server query)
+* Entrypoint: An entrypoint is implemented that will gracefully stop the server on container shutdown
 
 Credit
 ======
