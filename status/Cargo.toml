@@ -1,5 +1,5 @@
 [package]
-name = "query"
+name = "status"
 version = "0.1.0"
 authors = ["Jamie Bliss <jamie@ivyleav.es>"]
 edition = "2018"
@@ -11,3 +11,5 @@ edition = "2018"
 mcproto-min-async = { path = "../mcproto-min-async" }
 tokio = { version = "0.2", features = [ "macros" ] }
 futures = { version = "0.3" }
+localmc = { path = "../localmc" }
+failure = "0.1.6"

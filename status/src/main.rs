@@ -1,13 +1,38 @@
 #![recursion_limit="256"]
 use tokio::prelude::*;
 
-use tokio::net::{TcpStream};
+use tokio::net::TcpStream;
 use mcproto_min_async as mcp;
+use std::path::Path;
+use failure::Error;
+use localmc::{find_serverprops, read_properties};
 
+
+fn get_server_port(path: &Path) -> Result<u16, Error> {
+    match
+        read_properties(path)?.get("server-port").unwrap_or(&String::from("25565")).parse()
+    {
+        Ok(num) => Ok(num),
+        Err(err) => Err(Error::from(err))
+    }
+}
 
 #[tokio::main]
 async fn main() -> io::Result<()> {
-    let upstream = TcpStream::connect("127.0.0.1:25565").await?;
+    let port = match get_server_port(&match find_serverprops() {
+        Some(p) => p,
+        None => {
+            return Err(io::Error::new(io::ErrorKind::Other, "Unable to find server.properties"));
+        }
+    }) {
+        Ok(p) => p,
+        Err(e) => {
+            return Err(io::Error::new(io::ErrorKind::Other, format!("{}", e)))
+        }
+    };
+
+
+    let upstream = TcpStream::connect(format!("127.0.0.1:{}", port)).await?;
     let mut upstream = mcp::server::Client::create(upstream, mcp::protocol::Handshake);
     let p = mcp::protocol::handshake::Serverbound::ServerListPing {
         version: 498,
@@ -17,10 +42,13 @@ async fn main() -> io::Result<()> {
     };
     upstream.write(&p).await?;
     let mut upstream = upstream.set_protocol(mcp::protocol::Status);
-    let p = mcp::protocol::status::Serverbound::Request;
-    upstream.write(&p).await?;
-    let c = upstream.read_cb().await?;
-    println!("{:?}", c);
+    upstream.write(&mcp::protocol::status::Serverbound::Request).await?;
+    match upstream.read_cb().await? {
+        mcp::protocol::status::Clientbound::ServerListResp { data } => 
+            println!("{}", data),
+        c => 
+            panic!("Received an unexpected packet {:?}", c)
+    }
 
     Ok(())
 }
