@@ -43,6 +43,6 @@ source build-$type.xsh
 
 p"/mc/launch".write_text(f"""#!/bin/sh
 cd /mc
-exec {make_bourne_command(server_invocation())} $*
+exec {make_bourne_command(server_invocation())} "$@"
 """)
 p"/mc/launch".chmod(0o755)

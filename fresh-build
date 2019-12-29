@@ -1,4 +1,4 @@
 #!/bin/sh
 # Cleans up artifacts before executing container build
 rm -r target cmd/target status/target localmc/target localmc/Cargo.lock mcproto-min-async/target 2>/dev/null
-exec podman build --build-arg eula=yes $* .
+exec podman build --build-arg eula=yes "$@" .
