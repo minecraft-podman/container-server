@@ -12,13 +12,14 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 RUN find /tmp
 
 
-# Build Query helper
+# Build Server List helper
 # Note: We're cross-compiling from debian to alpine (musl) because of proc_macro
 # See https://github.com/rust-lang/rust/issues/40174
-# FROM rustbuilder AS build-query
-# COPY query /tmp/query
+# FROM rustbuilder AS build-status
+# COPY status /tmp/status
 # COPY localmc /tmp/localmc
-# WORKDIR /tmp/query
+# COPY mcproto-min-async /tmp/mcproto-min-async
+# WORKDIR /tmp/status
 # RUN cargo build --target x86_64-unknown-linux-musl --release
 
 
@@ -44,7 +45,7 @@ FROM openjdk:8-jre-alpine
 # RUN apk add libssl1.1
 
 COPY --from=build-cmd /tmp/cmd/target/x86_64-unknown-linux-musl/release/cmd /usr/bin/cmd
-# COPY --from=build-query /tmp/cmd/target/x86_64-unknown-linux-musl/release/query /usr/bin/query
+# COPY --from=build-status /tmp/cmd/target/x86_64-unknown-linux-musl/release/status /usr/bin/status
 COPY --from=build-server /mc /mc
 VOLUME /mc/world
 
