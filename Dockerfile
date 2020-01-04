@@ -54,7 +54,7 @@ COPY --from=build-cmd /tmp/cmd/target/x86_64-unknown-linux-musl/release/cmd /usr
 COPY --from=build-status /tmp/status/target/x86_64-unknown-linux-musl/release/status /usr/bin/status
 COPY --from=build-entrypoint /mc-server-runner /mc-server-runner
 COPY --from=build-server /mc /mc
-VOLUME /mc/world
+VOLUME ["/mc/world", "/mc/server.properties", "/mc/logs", "/mc/banned-ips.json", "/mc/ops.json", "/mc/whitelist.json"]
 
 ENTRYPOINT ["/mc-server-runner", "-shell", "/bin/sh"]
 CMD ["/mc/launch"]
