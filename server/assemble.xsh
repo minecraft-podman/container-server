@@ -29,7 +29,7 @@ def jar_name():
 
 
 def server_invocation():
-    return ["java", *java_args(), "-jar", jar_name(), "nogui"]
+    return ["/usr/local/openjdk-8/bin/java", *java_args(), "-jar", jar_name(), "nogui"]
 
 
 def make_bourne_command(args):
