@@ -45,7 +45,7 @@ COPY --from=build-cmd /tmp/cmd/target/release/cmd /usr/bin/cmd
 COPY --from=build-status /tmp/status/target/release/status /usr/bin/status
 COPY --from=build-entrypoint /mc-server-runner /mc-server-runner
 COPY --from=build-server /mc /mc
-VOLUME ["/mc/world", "/mc/server.properties", "/mc/logs", "/mc/banned-ips.json", "/mc/banned-players.json", "/mc/ops.json", "/mc/whitelist.json"]
+VOLUME ["/mc/world", "/mc/server.properties", "/mc/logs", "/mc/crash-reports", "/mc/banned-ips.json", "/mc/banned-players.json", "/mc/ops.json", "/mc/whitelist.json"]
 
 ENTRYPOINT ["/mc-server-runner", "-shell", "/bin/sh"]
 CMD ["/mc/launch"]
