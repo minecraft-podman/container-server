@@ -14,6 +14,7 @@ class ServerBuilder:
     def __init__(self, container, root, buildargs):
         self.container = container
         self.root = root
+        self.__args__ = buildargs
         vars(self).update(buildargs)
 
     def __call__(self):
@@ -27,7 +28,7 @@ class ServerBuilder:
                 func()
 
     __steps__ = [
-        'step_mkdir', 'step_eula', 'step_write_launch_script',
+        'step_mkdir', 'step_eula', 'step_write_launch_script', 'step_write_buildargs'
     ]
 
     def step_mkdir(self):
@@ -58,6 +59,14 @@ cd /mc
 exec {_make_bourne_command(self.server_invocation())} "$@"
 """)
         dest.chmod(0o755)
+
+    def step_write_buildargs(self):
+        (self.root / "mc" / ".buildargs").write_text(
+            "".join(
+                f"{k}={v}\n"
+                for k, v in self.__args__.items()
+            )
+        )
 
 
 def _make_bourne_command(args):
