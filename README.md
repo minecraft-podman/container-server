@@ -18,10 +18,10 @@ Build Args
 ----------
 
 * `eula`: Set this to accept the Mojang EULA
-* `type`: Set this to the type of server, one of: `bukkit`, `curse`, `paper`, `forge`, `ftb`, `multimc`, `spigot`, `sponge`, `vanilla`, `custom` (default: `vanilla`)
+* `type`: Set this to the type of server, one of: `bukkit`, `curse`, `papermc`, `forge`, `ftb`, `multimc`, `spigot`, `sponge`, `vanilla`, `custom` (default: `vanilla`)
 * `version`: Set this to the Minecraft version you want, or `latest` or `snapshot` (default: `latest`)
 
-Note: Only `type=vanilla` is implemented
+Note: Only the `vanilla` and `papermc` types are implemented
 
 Contents
 --------

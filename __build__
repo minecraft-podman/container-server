@@ -1,4 +1,5 @@
 #!/usr/bin/env buildahscript-py
+#| pip: requests
 #| arg: cachedir = None
 #| arg: eula
 #| arg: version = "latest"
