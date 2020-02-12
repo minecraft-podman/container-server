@@ -52,10 +52,10 @@ with Container('openjdk:8-jre-slim') as cont:
         "/mc/crash-reports", "/mc/banned-ips.json",
         "/mc/banned-players.json", "/mc/ops.json", "/mc/whitelist.json",
     }
-    cont.entrypoint = ["/mc-server-runner", "-shell", "/bin/sh"],
-    cont.command = ["/mc/launch"],
-    cont.healthcheck = ["status"],
-    cont.healthcheck_start_period = "5m",
+    cont.entrypoint = ["/mc-server-runner", "-shell", "/bin/sh"]
+    cont.command = ["/mc/launch"]
+    cont.healthcheck = ["status"]
+    cont.healthcheck_start_period = "5m"
 
     with cont.mount() as root:
         bcls = import_module(f"server_builders.{type}").Builder
