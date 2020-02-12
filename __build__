@@ -1,0 +1,65 @@
+#!/usr/bin/env buildahscript-py
+#| arg: cachedir = None
+#| arg: eula
+#| arg: version = "latest"
+#| arg: type = "vanilla"
+import tarfile
+from importlib import import_module
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from urllib.request import urlopen
+
+
+if cachedir is None:
+    _td = TemporaryDirectory()
+    cachedir = Path(_td.name)
+else:
+    cachedir = Path(cachedir)
+
+
+def build_rust(file, crates):
+    dest = cachedir / file
+    if dest.exists():
+        print(f"Skipping building {file}")
+    else:
+        with Container('rust:buster') as build:
+            main = crates[0]
+            for crate in crates:
+                build.copy_in(crate, f'/tmp/{crate}')
+            build.workdir = f'/tmp/{main}'
+            build.run(['/usr/local/cargo/bin/cargo', 'build', '--release'])
+            build.copy_out(f'/tmp/{main}/target/release/{file}', dest)
+
+
+build_rust('cmd', ['cmd', 'localmc'])
+build_rust('status', ['status', 'localmc', 'mcproto-min-async'])
+
+# Download & extract mc-server-runner
+if not (cachedir / 'mc-server-runner').exists():
+    with urlopen('https://github.com/itzg/mc-server-runner/releases/download/1.3.3/mc-server-runner_1.3.3_linux_amd64.tar.gz') as src:
+        with tarfile.open(fileobj=src, mode='r|*') as tf:
+            for entry in tf:
+                if entry.name == 'mc-server-runner':
+                    tf.extract(entry, cachedir / 'mc-server-runner')
+
+with Container('openjdk:8-jre-slim') as cont:
+    cont.copy_in(cachedir / 'cmd', '/usr/bin/cmd')
+    cont.copy_in(cachedir / 'status', '/usr/bin/status')
+    cont.copy_in(cachedir / 'mc-server-runner', '/mc-server-runner')
+
+    cont.volumes |= {
+        "/mc/world", "/mc/server.properties", "/mc/logs",
+        "/mc/crash-reports", "/mc/banned-ips.json",
+        "/mc/banned-players.json", "/mc/ops.json", "/mc/whitelist.json",
+    }
+    cont.entrypoint = ["/mc-server-runner", "-shell", "/bin/sh"],
+    cont.command = ["/mc/launch"],
+    cont.healthcheck = ["status"],
+    cont.healthcheck_start_period = "5m",
+
+    with cont.mount() as root:
+        bcls = import_module(f"server_builders.{type}").Builder
+        builder = bcls(cont, root, __args__)
+        builder()
+
+    return cont.commit()
