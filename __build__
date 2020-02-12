@@ -59,6 +59,7 @@ with Container('openjdk:8-jre-slim') as cont:
     cont.command = ["/mc/launch"]
     cont.healthcheck = ["status"]
     cont.healthcheck_start_period = "5m"
+    cont.workdir = "/mc"
 
     with cont.mount() as root:
         bcls = import_module(f"server_builders.{type}").Builder

@@ -12,11 +12,11 @@ class Builder(ServerBuilder):
         return "/mc/server.jar"
 
     __steps__ = [
-        'step_download_server', 'step_update_volumes',
+        'step_download_paperclip', 'step_download_server', 'step_update_volumes',
     ]
 
-    def step_download_server(self):
-        """Downloading server"""
+    def step_download_paperclip(self):
+        """Downloading paperclip"""
 
         version = get_version_from_buildargs(self.version)
 
@@ -31,6 +31,10 @@ class Builder(ServerBuilder):
             with (self.root / "mc" / "server.jar").open('wb') as dest:
                 for chunk in src.iter_content(chunk_size=None):
                     dest.write(chunk)
+
+    def step_download_server(self):
+        # paperclip prints for us
+        self.container.run(['/usr/local/openjdk-8/bin/java', '-Dpaperclip.patchonly=true', '-jar', '/mc/server.jar'])
 
     def step_update_volumes(self):
         self.container.volumes |= {
