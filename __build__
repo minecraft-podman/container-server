@@ -1,9 +1,9 @@
 #!/usr/bin/env buildahscript-py
 #| pip: requests
-#| arg: cachedir = None
-#| arg: eula
-#| arg: version = "latest"
-#| arg: type = "vanilla"
+#| arg: cachedir: pathlib.Path = None
+#| arg: eula: bool
+#| arg: version: str = "latest"
+#| arg: type: str = "vanilla"
 import tarfile
 from importlib import import_module
 from pathlib import Path
@@ -14,14 +14,13 @@ from urllib.request import urlopen
 if cachedir is None:
     _td = TemporaryDirectory()
     cachedir = Path(_td.name)
-else:
-    cachedir = Path(cachedir)
 
 
 def build_rust(file, crates):
     dest = cachedir / file
     if dest.exists():
         print(f"Skipping building {file}")
+        dest.touch()
     else:
         with Container('rust:buster') as build:
             main = crates[0]
