@@ -27,6 +27,8 @@ class Builder(ServerBuilder):
 
         build = buildinfo['builds']['latest']
 
+        # add_url uses urllib, which breaks with PaperMC's API
+        # self.container.add_url(f"https://papermc.io/api/v1/paper/{version}/{build}/download", "/mc/server.jar")
         with requests.get(f"https://papermc.io/api/v1/paper/{version}/{build}/download", stream=True) as src:
             with (self.root / "mc" / "server.jar").open('wb') as dest:
                 for chunk in src.iter_content(chunk_size=None):

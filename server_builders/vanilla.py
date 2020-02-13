@@ -1,6 +1,3 @@
-import shutil
-from urllib.request import urlopen
-
 from ._common import ServerBuilder, get_version_data, get_version_from_buildargs
 
 
@@ -17,6 +14,4 @@ class Builder(ServerBuilder):
 
         info = get_version_data(get_version_from_buildargs(self.version))
 
-        with urlopen(info['downloads']['server']['url']) as src:
-            with (self.root / "mc" / "server.jar").open('wb') as dest:
-                shutil.copyfileobj(src, dest)
+        self.container.add_url(info['downloads']['server']['url'], "/mc/server.jar")
