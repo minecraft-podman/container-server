@@ -1,6 +1,6 @@
-import collections
 import functools
 import json
+import shlex
 import sys
 from urllib.request import urlopen
 
@@ -69,8 +69,13 @@ exec {_make_bourne_command(self.server_invocation())} "$@"
         )
 
 
-def _make_bourne_command(args):
-    return " ".join(f"'{bit}'" for bit in args)
+if hasattr(shlex, 'join'):
+    # Py3.8
+    _make_bourne_command = shlex.join
+else:
+    def _make_bourne_command(split_command):
+        """Return a shell-escaped string from *split_command*."""
+        return ' '.join(shlex.quote(arg) for arg in split_command)
 
 
 @functools.lru_cache()
